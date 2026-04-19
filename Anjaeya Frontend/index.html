@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anjaneya AI | Nashik Security Initiative</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-container"></div>
+    <div class="overlay"></div>
+
+    <!-- Massive SOS Alert Overlay -->
+    <div id="sos-fullscreen-alert" class="sos-fullscreen hidden">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <h1 id="sos-title">CRITICAL SOS BROADCASTED</h1>
+        <p id="sos-desc">Authorities dispatched to target coordinates. Awaiting confirmation...</p>
+    </div>
+
+    <!-- Rapid Dispatch Modal -->
+    <div id="dispatch-modal-overlay" class="modal-overlay hidden">
+        <div class="dispatch-modal glass-panel">
+            <button class="close-btn" onclick="closeDispatchModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <i class="fa-solid fa-truck-fast"></i>
+                <h2>RAPID DISPATCH UNIT</h2>
+                <p>Select Emergency Type to deploy appropriate forces.</p>
+            </div>
+            <div class="dispatch-grid">
+                <button class="dispatch-btn bomb" onclick="triggerDispatch('Bomb Threat')">
+                    <i class="fa-solid fa-bomb"></i>
+                    <span>Bomb Threat / Suspicious Item</span>
+                </button>
+                <button class="dispatch-btn murder" onclick="triggerDispatch('Violent Crime')">
+                    <i class="fa-solid fa-user-ninja"></i>
+                    <span>Violent Crime / Murder</span>
+                </button>
+                <button class="dispatch-btn women" onclick="triggerDispatch('Women Safety')">
+                    <i class="fa-solid fa-person-dress-burst"></i>
+                    <span>Women in Distress</span>
+                </button>
+                <button class="dispatch-btn stampede" onclick="triggerDispatch('Stampede')">
+                    <i class="fa-solid fa-people-group"></i>
+                    <span>Stampede Warning</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Verification Overlay -->
+    <div id="ai-scan-overlay" class="modal-overlay hidden">
+        <div class="scan-panel glass-panel">
+            <div class="radar-scan"></div>
+            <h2 style="font-family: var(--font-heading); color: var(--clr-godavari-blue);"><i class="fa-solid fa-robot"></i> AI VERIFICATION IN PROGRESS</h2>
+            <p style="margin-top:10px;">Cross-referencing report with live telemetry and CCTV grids...</p>
+            <div class="scan-logs">
+                <div id="log-1" class="log-line">> Initiating drone sweep...</div>
+                <div id="log-2" class="log-line">> Analyzing crowd density matrices...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 1: SECURE LOGIN -->
+    <div id="view-login" class="view-screen active flex-center">
+        <div class="login-panel glass-panel">
+            <div class="login-header">
+                <i class="fa-solid fa-shield-halved badge-icon"></i>
+                <h1>ANJANEYA <span>AI</span></h1>
+                <h2>POLICE CONTROL CENTER</h2>
+            </div>
+            
+            <div class="mission-statement">
+                <p><strong>NASHIK KUMBH SECURITY INITIATIVE</strong></p>
+                <p class="solemn-text">Advanced crowd telemetry and live tracking. Protecting the pilgrims. Preventing the tragedy of 2003.</p>
+            </div>
+
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <i class="fa-solid fa-id-badge"></i>
+                    <input type="text" id="login-badge" placeholder="Officer Badge ID" required value="NKO-4921">
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-key"></i>
+                    <input type="password" id="login-pass" placeholder="Passcode" required value="admin123">
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-1">
+                    <i class="fa-solid fa-fingerprint"></i> AUTHENTICATE
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIEW 2: HOME HUB -->
+    <div id="view-home" class="view-screen flex-center">
+        <div class="hub-container">
+            <header class="hub-header">
+                <div class="header-left">
+                    <i class="fa-solid fa-shield-halved badge-icon-small"></i>
+                    <div>
+                        <h2>COMMAND HUB</h2>
+                        <span class="system-status"><div class="health-indicator"></div> SYSTEM ACTIVE</span>
+                    </div>
+                </div>
+                <div class="time-display" id="clock">00:00:00</div>
+            </header>
+
+            <div class="hub-grid">
+                <!-- Large Map Card -->
+                <div class="hub-card map-card glass-panel" onclick="switchView('view-map')">
+                    <div class="card-bg-overlay"></div>
+                    <div class="card-content">
+                        <i class="fa-solid fa-satellite-dish card-icon"></i>
+                        <h3>LIVE LOCATION & MAP</h3>
+                        <p>Track crowd densities, 3D checkpoints, and calculate safe evacuation routes.</p>
+                    </div>
+                </div>
+
+                <!-- Women Safety Card -->
+                <div class="hub-card safety-card-hub glass-panel" onclick="switchView('view-tools')">
+                    <div class="card-content">
+                        <i class="fa-solid fa-person-dress-burst card-icon" style="color: var(--clr-godavari-blue);"></i>
+                        <h3>WOMEN SAFETY PROTOCOL</h3>
+                        <p>Analyze night-time zoning and isolated risk areas.</p>
+                    </div>
+                </div>
+
+                <!-- Telemetry Card -->
+                <div class="hub-card telemetry-card glass-panel" onclick="switchView('view-tools')">
+                    <div class="card-content">
+                        <i class="fa-solid fa-microchip card-icon" style="color: var(--clr-gold);"></i>
+                        <h3>AI CROWD TELEMETRY</h3>
+                        <p>View live ML risk predictions and escalation intel.</p>
+                    </div>
+                </div>
+
+                <!-- Panic SOS Card -->
+                <div class="hub-card sos-card glass-panel" onclick="openDispatchModal()">
+                    <div class="card-content text-center">
+                        <i class="fa-solid fa-triangle-exclamation card-icon-massive"></i>
+                        <h3>TRIGGER EMERGENCY SOS</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 3: LIVE MAP FULLSCREEN -->
+    <div id="view-map" class="view-screen flex-column">
+        <header class="app-header glass-panel">
+            <button class="btn btn-secondary" onclick="switchView('view-home')">
+                <i class="fa-solid fa-arrow-left"></i> BACK TO HUB
+            </button>
+            <h2>LIVE SATELLITE TRACKING</h2>
+            <div class="header-actions">
+                <button class="btn btn-secondary mr-1" onclick="resetSystemSOS()"><i class="fa-solid fa-rotate-right"></i> RESET SYSTEM</button>
+                <button class="btn btn-danger pulse-btn" onclick="openDispatchModal()">RAPID DISPATCH</button>
+            </div>
+        </header>
+
+        <div class="map-layout">
+            <div class="map-container glass-panel">
+                <div id="map"></div>
+                <div class="map-legend glass-panel">
+                    <h4>Map Legend</h4>
+                    <div class="legend-item"><div class="legend-color" style="background: var(--clr-gold);"></div><span>Live Location</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: var(--clr-saffron);"></div><span>Risk Zone</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: var(--clr-godavari-blue);"></div><span>Safe Exit</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: var(--risk-danger); border-radius: 50%;"></div><span>Active SOS</span></div>
+                </div>
+            </div>
+
+            <!-- Route Finder Sidebar -->
+            <div class="map-sidebar glass-panel">
+                <h3><i class="fa-solid fa-route"></i> Evacuation Vector</h3>
+                <p class="mb-1 text-muted">Generate immediate safe routing to closest exit gate.</p>
+                <div class="route-controls flex-column">
+                    <select id="route-location" class="glass-input">
+                        <option value="Ramkund">Ramkund</option>
+                        <option value="Sadhugram (Tapovan)">Sadhugram (Tapovan)</option>
+                        <option value="Kalaram Temple">Kalaram Temple</option>
+                        <option value="Panchavati">Panchavati</option>
+                        <option value="Godavari Ghat">Godavari Ghat</option>
+                        <option value="Kapaleshwar Temple">Kapaleshwar Temple</option>
+                        <option value="Trimbakeshwar">Trimbakeshwar</option>
+                    </select>
+                    <button class="btn btn-accent w-100" onclick="findSafeRoute()">Calculate Path</button>
+                </div>
+                <div id="route-result" class="route-path mt-1">Awaiting target node...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 4: TOOLS & TELEMETRY -->
+    <div id="view-tools" class="view-screen flex-column">
+        <header class="app-header glass-panel">
+            <button class="btn btn-secondary" onclick="switchView('view-home')">
+                <i class="fa-solid fa-arrow-left"></i> BACK TO HUB
+            </button>
+            <h2>AI TELEMETRY & PROTOCOLS</h2>
+        </header>
+
+        <div class="tools-grid">
+            <!-- Live Risk Panel -->
+            <div class="card glass-panel">
+                <h3><i class="fa-solid fa-gauge-high"></i> Global Telemetry</h3>
+                <div class="gauge-container">
+                    <div class="gauge-ring" id="risk-ring"><div class="gauge-value" id="risk-value">SAFE</div></div>
+                </div>
+                <div class="stats-row mb-1">
+                    <div class="stat"><span class="stat-label">Density</span><span class="stat-val" id="val-density">0.2</span></div>
+                    <div class="stat"><span class="stat-label">Movement</span><span class="stat-val" id="val-movement">0.3</span></div>
+                    <div class="stat"><span class="stat-label">Change</span><span class="stat-val" id="val-change">0.1</span></div>
+                </div>
+                <button class="btn btn-secondary w-100" onclick="fetchLiveRisk()">Poll Sensors</button>
+            </div>
+
+            <!-- Women Safety Monitor -->
+            <div class="card glass-panel">
+                <h3><i class="fa-solid fa-shield-cat"></i> Women Safety Protocol</h3>
+                <p class="text-muted mb-1">Analyze zone safety explicitly for vulnerable groups.</p>
+                <div class="safety-controls">
+                    <label class="toggle-switch"><input type="checkbox" id="is-night-toggle" checked><span class="slider"></span></label>
+                    <span>Night Protocol Active</span>
+                </div>
+                <button class="btn btn-primary w-100 mt-1" onclick="checkWomenSafety()">Execute Scan</button>
+                <div id="safety-status-banner" class="status-banner mt-1 safe">Protocol Standing By</div>
+            </div>
+
+            <!-- AI Escalation Intel -->
+            <div class="card glass-panel">
+                <h3><i class="fa-solid fa-brain"></i> AI Escalation Logic</h3>
+                <div id="escalation-result" class="insight-box mb-1"><p class="placeholder-text">Awaiting data...</p></div>
+                <button class="btn btn-outline w-100 mt-auto" onclick="runEscalationCheck()">Run Intelligence Analysis</button>
+            </div>
+
+            <!-- Predict Risk (Manual Override) -->
+            <div class="card glass-panel">
+                <h3><i class="fa-solid fa-calculator"></i> Manual Override Simulator</h3>
+                <div class="input-grid">
+                    <input type="number" id="sim-density" class="glass-input-small" placeholder="Den" step="0.1" value="0.8">
+                    <input type="number" id="sim-movement" class="glass-input-small" placeholder="Mov" step="0.1" value="0.7">
+                    <input type="number" id="sim-change" class="glass-input-small" placeholder="Chg" step="0.1" value="0.6">
+                </div>
+                <button class="btn btn-secondary w-100 mt-1" onclick="predictRiskManual()">Simulate Algorithm</button>
+                <div id="predict-result" class="mt-1" style="text-align: center; font-weight: bold; font-family: var(--font-heading);"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="app.js"></script>
+</body>
+</html>

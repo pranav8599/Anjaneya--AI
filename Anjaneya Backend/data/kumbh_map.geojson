@@ -1,0 +1,15 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "name": "Ramkund", "type": "crowd_zone" }, "geometry": { "type": "Point", "coordinates": [73.7892, 19.9983] } },
+    { "type": "Feature", "properties": { "name": "Godavari Ghat", "type": "crowd_zone" }, "geometry": { "type": "Point", "coordinates": [73.7810, 19.9955] } },
+    { "type": "Feature", "properties": { "name": "Sadhugram (Tapovan)", "type": "crowd_zone" }, "geometry": { "type": "Point", "coordinates": [73.8115, 20.0031] } },
+    { "type": "Feature", "properties": { "name": "Kalaram Temple", "type": "crowd_zone" }, "geometry": { "type": "Point", "coordinates": [73.7936, 20.0019] } },
+    { "type": "Feature", "properties": { "name": "Panchavati", "type": "crowd_zone" }, "geometry": { "type": "Point", "coordinates": [73.7940, 20.0050] } },
+    { "type": "Feature", "properties": { "name": "Kapaleshwar Temple", "type": "crowd_zone" }, "geometry": { "type": "Point", "coordinates": [73.7915, 20.0000] } },
+    { "type": "Feature", "properties": { "name": "Trimbakeshwar", "type": "crowd_zone" }, "geometry": { "type": "Point", "coordinates": [73.5300, 19.9320] } },
+    { "type": "Feature", "properties": { "name": "Civil Hospital", "type": "safe_zone" }, "geometry": { "type": "Point", "coordinates": [73.7780, 19.9990] } },
+    { "type": "Feature", "properties": { "name": "Police Parade Ground", "type": "safe_zone" }, "geometry": { "type": "Point", "coordinates": [73.7710, 20.0050] } },
+    { "type": "Feature", "properties": { "name": "Nashik Road Station", "type": "safe_zone" }, "geometry": { "type": "Point", "coordinates": [73.8400, 19.9500] } }
+  ]
+}
